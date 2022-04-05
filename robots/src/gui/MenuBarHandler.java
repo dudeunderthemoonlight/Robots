@@ -7,25 +7,49 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 
-public class MyMenuBar extends JMenuBar {
+/**
+ * Класс создания и обработки главного меню-бара приложения.
+ */
+public class MenuBarHandler {
+
+    /**
+     * Поле главного окна, которому принадлежит меню-бар.
+     */
     public MainApplicationFrame mainFrame;
+
+    /**
+     * Поле меню-бара.
+     */
     public final static JMenuBar menuBar = new JMenuBar();
 
-    public MyMenuBar(MainApplicationFrame frame) {
+    public MenuBarHandler(MainApplicationFrame frame) {
         mainFrame = frame;
         createMenuBar();
     }
 
+    /**
+     * Добавление элементов меню к бару.
+     *
+     * @param menu - элемент
+     */
     protected void addMenu(JMenu menu) {
         menuBar.add(menu);
     }
 
+    /**
+     * Метод объединения элементов меню в меню-бар.
+     */
     private void createMenuBar() {
         addMenu(createOptionMenu());
         addMenu(createLookAndFeelMenu());
         addMenu(createTestMenu());
     }
 
+    /**
+     * Метод создания элемента меню, меняющего внешний вид приложения (режим отображения).
+     *
+     * @return lookAndFeelMenu - элемент меню
+     */
     private JMenu createLookAndFeelMenu() {
         JMenu lookAndFeelMenu = new JMenu("Режим отображения");
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
@@ -53,6 +77,11 @@ public class MyMenuBar extends JMenuBar {
         return lookAndFeelMenu;
     }
 
+    /**
+     * Метод создания элемента меню - взаимодействие с тестами.
+     *
+     * @return testMenu - элемент меню
+     */
     private JMenu createTestMenu() {
         JMenu testMenu = new JMenu("Тесты");
         testMenu.setMnemonic(KeyEvent.VK_T);
@@ -72,6 +101,11 @@ public class MyMenuBar extends JMenuBar {
         return testMenu;
     }
 
+    /**
+     * Метод создания элемента меню - опции.
+     *
+     * @return optionMenu - элемент меню
+     */
     private JMenu createOptionMenu() {
         JMenu optionMenu = new JMenu("Опции");
         optionMenu.setMnemonic(KeyEvent.VK_O);
