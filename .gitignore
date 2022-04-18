@@ -222,3 +222,11 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# Default ignored files
+/shelf/
+.idea
+*.iml
+target
+!/model/target/generated-sources/annotations/*
+/httpRequests/
