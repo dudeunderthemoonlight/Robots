@@ -2,15 +2,25 @@ package gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 
 import javax.swing.*;
 
 import log.Logger;
+import storage.StateHandler;
+import storage.Storage;
+
+import static storage.Storage.getStateStorage;
 
 /**
  * Класс создания и обработки главного окна приложения.
  */
 public class MainApplicationFrame extends JFrame {
+
+    private final Storage storage = new Storage();
+    private final GameWindow gameWindow = new GameWindow();
+    private final LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
+    private static final StateHandler stateHandler = new StateHandler();
 
     /**
      * Поле главного окна приложения.
@@ -22,6 +32,7 @@ public class MainApplicationFrame extends JFrame {
      */
     private static final JDesktopPane desktopPane = new JDesktopPane();
 
+
     /**
      * Метод создания, отрисовки и обработки нажатий на главное окно.
      */
@@ -32,12 +43,20 @@ public class MainApplicationFrame extends JFrame {
         frame.setScreenMargin(40);
         frame.setContentPane(desktopPane);
 
+        Storage.setStateStorage(stateHandler.readStates());
+
         frame.generateMenuBar();
         frame.generateLogWindow();
         frame.generateGameWindow();
 
         frame.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        frame.quitListener();
+    }
 
+    /**
+     * Метод добавляет прослушивание на выход их приложения.
+     */
+    private void quitListener() {
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent event) {
                 Object[] options = {"Да", "Нет!"};
@@ -46,6 +65,9 @@ public class MainApplicationFrame extends JFrame {
                                 JOptionPane.YES_NO_OPTION,
                                 JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                 if (answer == 0) {
+                    gameWindow.saveState(storage);
+                    logWindow.saveState(storage);
+                    stateHandler.saveToFile(getStateStorage());
                     event.getWindow().setVisible(false);
                     System.exit(0);
                 }
@@ -88,9 +110,7 @@ public class MainApplicationFrame extends JFrame {
      * Генерирует игровое окно.
      */
     protected void generateGameWindow() {
-        GameWindow gameWindow = new GameWindow();
-        gameWindow.setLocation(230, 10);
-        gameWindow.setSize(1000, 600);
+        gameWindow.loadState(storage);
         addWindow(gameWindow);
     }
 
@@ -98,10 +118,7 @@ public class MainApplicationFrame extends JFrame {
      * Генерирует окно логирования.
      */
     protected void generateLogWindow() {
-        LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
-        logWindow.setLocation(10, 10);
-        logWindow.setSize(210, 600);
-        setPreferredSize(logWindow.getSize());
+        logWindow.loadState(storage);
         Logger.debug("Протокол работает");
         addWindow(logWindow);
     }
