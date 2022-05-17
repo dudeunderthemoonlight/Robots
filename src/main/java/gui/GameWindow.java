@@ -1,24 +1,27 @@
 package gui;
 
+import game.GameVisualizer;
+import game.RobotModel;
 import storage.Savable;
 import storage.Storage;
 import storage.WindowState;
 
 import java.awt.BorderLayout;
-import java.beans.PropertyVetoException;
-import java.util.HashMap;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
 public class GameWindow extends JInternalFrame implements Savable
 {
-    public GameWindow()
+
+    public GameWindow(RobotModel robotModel)
     {
         super("Игровое поле", true, true, true, true);
-        GameVisualizer m_visualizer = new GameVisualizer();
+
         JPanel panel = new JPanel(new BorderLayout());
+        GameVisualizer m_visualizer = new GameVisualizer(robotModel);
         panel.add(m_visualizer, BorderLayout.CENTER);
+
         getContentPane().add(panel);
         pack();
     }
@@ -28,15 +31,12 @@ public class GameWindow extends JInternalFrame implements Savable
         storage.setState("gameWindow", new WindowState(this));
     }
 
-    /**
-     * Метод применения сохраненного состояния, при предыдущем выходе.
-     * @param storage - класс хранящий состояние
-     */
     @Override
     public void loadState(Storage storage) {
         GameWindow frame = this;
         WindowState gameState = storage.getState("gameWindow");
         int height, width, y, x;
+        //default settings
         if (gameState == null){
             x = 230;
             y = 10;
