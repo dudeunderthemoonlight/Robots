@@ -1,6 +1,5 @@
 package game;
 
-import gui.GameWindow;
 
 import java.awt.*;
 import java.util.Observable;
@@ -55,7 +54,10 @@ public class RobotModel extends Observable {
 
         double diff = angleToTarget - m_robotDirection;
         if (Math.abs(diff) < error) {
-            angularVelocity = 0;
+            angularVelocity = -angularVelocity;
+        }
+        if (Math.abs(Math.PI - (Math.abs(diff))) < error) {
+            angularVelocity = -angularVelocity;
         }
         if ((diff > error && diff <= Math.PI) || (diff < -Math.PI)) {
             angularVelocity = maxAngularVelocity;
