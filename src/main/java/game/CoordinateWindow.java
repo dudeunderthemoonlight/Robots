@@ -6,17 +6,25 @@ import storage.WindowState;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Observable;
 import java.util.Observer;
 
 
+
+/**
+ * Класс окна с координатами.
+ */
 public class CoordinateWindow extends JDialog implements Observer, Savable {
 
     private final RobotModel m_robotModel;
     private final TextArea m_coordinateContent;
+    private final CoordinateWindow m_coordinateWindow;
 
     public CoordinateWindow(JDesktopPane desktopPane, RobotModel robotModel) {
         super((JFrame) SwingUtilities.getWindowAncestor(desktopPane), "Координаты");
+        m_coordinateWindow = this;
         m_robotModel = robotModel;
         robotModel.addObserver(this);
 
@@ -26,6 +34,19 @@ public class CoordinateWindow extends JDialog implements Observer, Savable {
         panel.add(m_coordinateContent, BorderLayout.CENTER);
 
         getContentPane().add(panel);
+        quitListener();
+    }
+
+    /**
+     * Прослушивание закрытия диалогового окна координат.
+     */
+    public void quitListener(){
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent event) {
+                    m_robotModel.deleteObserver(m_coordinateWindow);
+                    event.getWindow().setVisible(false);
+            }
+        });
     }
 
     @Override
