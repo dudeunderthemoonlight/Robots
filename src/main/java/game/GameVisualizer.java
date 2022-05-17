@@ -45,14 +45,13 @@ public class GameVisualizer extends JPanel implements Observer
             public void mouseClicked(MouseEvent e)
             {
                 m_robotModel.setTargetPosition(e.getPoint());
-                onRedrawEvent();
             }
         });
         setDoubleBuffered(true);
     }
 
     /**
-     * Отрисовка робота и цели.
+     * Отрисовка цели.
      * @param g
      */
     @Override
@@ -71,6 +70,7 @@ public class GameVisualizer extends JPanel implements Observer
     private static void drawOval(Graphics g, int centerX, int centerY, int diam1, int diam2) {
         g.drawOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
     }
+
 
     private void drawRobot(Graphics2D g, int x, int y, double direction) {
         int robotCenterX = MathOperations.round(x);
