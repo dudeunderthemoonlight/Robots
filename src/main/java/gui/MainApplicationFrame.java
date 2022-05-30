@@ -55,13 +55,13 @@ public class MainApplicationFrame extends JFrame {
         frame.generateCoordinateWindow();
 
         frame.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        frame.quitListener();
+        frame.addQuitListener();
     }
 
     /**
-     * Метод добавляет прослушивание на выход их приложения.
+     * Метод добавляет прослушивание на выход из приложения.
      */
-    private void quitListener() {
+    private void addQuitListener() {
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent event) {
                 Object[] options = {"Да", "Нет!"};

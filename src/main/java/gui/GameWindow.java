@@ -33,13 +33,13 @@ public class GameWindow extends JInternalFrame implements Savable {
         getContentPane().add(panel);
         pack();
 
-        quitListener();
+        addQuitListener();
     }
 
     /**
-     * Прослушивание закрытия игрового окна.
+     * Добавляет слушателя события закрытия окна.
      */
-    public void quitListener(){
+    public void addQuitListener(){
         addInternalFrameListener(new InternalFrameAdapter() {
             @Override
             public void internalFrameClosing(InternalFrameEvent e) {
