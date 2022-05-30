@@ -2,10 +2,11 @@ package gui;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 
 import javax.swing.*;
 
+import game.CoordinateWindow;
+import game.RobotModel;
 import log.Logger;
 import storage.StateHandler;
 import storage.Storage;
@@ -17,11 +18,6 @@ import static storage.Storage.getStateStorage;
  */
 public class MainApplicationFrame extends JFrame {
 
-    private final Storage storage = new Storage();
-    private final GameWindow gameWindow = new GameWindow();
-    private final LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
-    private static final StateHandler stateHandler = new StateHandler();
-
     /**
      * Поле главного окна приложения.
      */
@@ -31,6 +27,14 @@ public class MainApplicationFrame extends JFrame {
      * Поле рабочей области frame.
      */
     private static final JDesktopPane desktopPane = new JDesktopPane();
+
+    private static final StateHandler stateHandler = new StateHandler();
+
+    private final RobotModel m_robotModel = new RobotModel();
+    private final Storage storage = new Storage();
+    private final GameWindow gameWindow = new GameWindow(m_robotModel);
+    private final LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
+    private CoordinateWindow m_coordinateWindow;
 
 
     /**
@@ -48,15 +52,16 @@ public class MainApplicationFrame extends JFrame {
         frame.generateMenuBar();
         frame.generateLogWindow();
         frame.generateGameWindow();
+        frame.generateCoordinateWindow();
 
         frame.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        frame.quitListener();
+        frame.addQuitListener();
     }
 
     /**
-     * Метод добавляет прослушивание на выход их приложения.
+     * Метод добавляет прослушивание на выход из приложения.
      */
-    private void quitListener() {
+    private void addQuitListener() {
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent event) {
                 Object[] options = {"Да", "Нет!"};
@@ -67,6 +72,7 @@ public class MainApplicationFrame extends JFrame {
                 if (answer == 0) {
                     gameWindow.saveState(storage);
                     logWindow.saveState(storage);
+                    m_coordinateWindow.saveState(storage);
                     stateHandler.saveToFile(getStateStorage());
                     event.getWindow().setVisible(false);
                     System.exit(0);
@@ -123,6 +129,12 @@ public class MainApplicationFrame extends JFrame {
         addWindow(logWindow);
     }
 
+    protected void generateCoordinateWindow() {
+        CoordinateWindow coordinateWindow = new CoordinateWindow(desktopPane, m_robotModel);
+        m_coordinateWindow = coordinateWindow;
+        coordinateWindow.loadState(storage);
+        coordinateWindow.setVisible(true);
+    }
     /**
      * Меняет внешний вид (режим отображения) frame.
      *
