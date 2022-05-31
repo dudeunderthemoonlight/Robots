@@ -2,16 +2,18 @@ package gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.*;
 
-import game.CoordinateWindow;
 import game.RobotModel;
 import log.Logger;
+import storage.Savable;
 import storage.StateHandler;
-import storage.Storage;
+import storage.WindowState;
 
-import static storage.Storage.getStateStorage;
 
 /**
  * Класс создания и обработки главного окна приложения.
@@ -28,13 +30,13 @@ public class MainApplicationFrame extends JFrame {
      */
     private static final JDesktopPane desktopPane = new JDesktopPane();
 
-    private static final StateHandler stateHandler = new StateHandler();
-
+    private final StateHandler stateHandler = new StateHandler();
     private final RobotModel m_robotModel = new RobotModel();
-    private final Storage storage = new Storage();
     private final GameWindow gameWindow = new GameWindow(m_robotModel);
     private final LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
-    private CoordinateWindow m_coordinateWindow;
+
+    private final HashMap<String, WindowState> tempStorage = new HashMap<>();
+    private final ArrayList<Savable> windows = new ArrayList<>();
 
 
     /**
@@ -47,12 +49,9 @@ public class MainApplicationFrame extends JFrame {
         frame.setScreenMargin(40);
         frame.setContentPane(desktopPane);
 
-        Storage.setStateStorage(stateHandler.readStates());
-
+        frame.stateRecovery();
         frame.generateMenuBar();
-        frame.generateLogWindow();
-        frame.generateGameWindow();
-        frame.generateCoordinateWindow();
+
 
         frame.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         frame.addQuitListener();
@@ -70,15 +69,32 @@ public class MainApplicationFrame extends JFrame {
                                 JOptionPane.YES_NO_OPTION,
                                 JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                 if (answer == 0) {
-                    gameWindow.saveState(storage);
-                    logWindow.saveState(storage);
-                    m_coordinateWindow.saveState(storage);
-                    stateHandler.saveToFile(getStateStorage());
+                    stateSaving();
                     event.getWindow().setVisible(false);
                     System.exit(0);
                 }
             }
         });
+    }
+
+    /**
+     * Генерауия окон + восстановление состояния состояний окон.
+     */
+    private void stateRecovery() {
+        HashMap<String, WindowState> states = stateHandler.readStates();
+        frame.generateLogWindow(states);
+        frame.generateGameWindow(states);
+        frame.generateCoordinateWindow(states);
+    }
+
+    /**
+     * Сохранение состояний окон.
+     */
+    private void stateSaving(){
+        for (Savable window : windows) {
+            window.saveState(tempStorage);
+            stateHandler.saveToFile(tempStorage);
+        }
     }
 
     /**
@@ -113,28 +129,34 @@ public class MainApplicationFrame extends JFrame {
     }
 
     /**
-     * Генерирует игровое окно.
+     * Генерирует игровое окно по словарю состояний.
      */
-    protected void generateGameWindow() {
-        gameWindow.loadState(storage);
+    protected void generateGameWindow(HashMap<String, WindowState> states) {
+        gameWindow.recoverState(states);
         addWindow(gameWindow);
+        windows.add(gameWindow);
     }
 
     /**
-     * Генерирует окно логирования.
+     * Генерирует окно логирования по словарю состояний.
      */
-    protected void generateLogWindow() {
-        logWindow.loadState(storage);
+    protected void generateLogWindow(HashMap<String, WindowState> states) {
+        logWindow.recoverState(states);
         Logger.debug("Протокол работает");
         addWindow(logWindow);
+        windows.add(logWindow);
     }
 
-    protected void generateCoordinateWindow() {
+    /**
+     * Генерирует окно координат робота по словарю состояний.
+     */
+    protected void generateCoordinateWindow(HashMap<String, WindowState> states) {
         CoordinateWindow coordinateWindow = new CoordinateWindow(desktopPane, m_robotModel);
-        m_coordinateWindow = coordinateWindow;
-        coordinateWindow.loadState(storage);
+        coordinateWindow.recoverState(states);
         coordinateWindow.setVisible(true);
+        windows.add(coordinateWindow);
     }
+
     /**
      * Меняет внешний вид (режим отображения) frame.
      *
