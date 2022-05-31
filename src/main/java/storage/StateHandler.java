@@ -24,7 +24,9 @@ public class StateHandler {
         }
     }
 
-
+    /**
+     * Чтение файла.
+     */
     public Object readFile() {
         if (new File(PATH).exists()) {
             try {
