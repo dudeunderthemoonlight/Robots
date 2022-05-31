@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -50,15 +51,15 @@ public class CoordinateWindow extends JDialog implements Observer, Savable {
     }
 
     @Override
-    public void saveState(HashMap<String, WindowState> states) {
+    public void saveState(Map<String, WindowState> states) {
         states.put("coordinateWindow", new WindowState(this));
     }
 
     @Override
-    public void recoverState(HashMap<String, WindowState> states) {
+    public void recoverState(Map<String, WindowState> states) {
         CoordinateWindow dialog = this;
         WindowState coordinateState = states.getOrDefault("coordinateWindow",
-                new WindowState(10, 10, 600, 210)); //default settings
+                new WindowState(10, 10, 600, 210, true)); //default settings
         dialog.setSize(coordinateState.getWidth(), coordinateState.getHeight());
         dialog.setLocation(coordinateState.getX(), coordinateState.getY());
     }

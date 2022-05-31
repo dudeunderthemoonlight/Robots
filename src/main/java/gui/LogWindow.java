@@ -49,7 +49,7 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Sava
     }
 
     @Override
-    public void saveState(HashMap<String, WindowState> states) {
+    public void saveState(Map<String, WindowState> states) {
         states.put("logWindow", new WindowState(this));
     }
 
@@ -59,11 +59,16 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Sava
      * @param states - словарь состояний
      */
     @Override
-    public void recoverState(HashMap<String, WindowState> states) {
+    public void recoverState(Map<String, WindowState> states) {
         LogWindow frame = this;
         WindowState logState = states.getOrDefault("logWindow",
-                new WindowState(230, 300, 200, 200)); //default settings
+                new WindowState(230, 300, 200, 200, true)); //default settings
         frame.setSize(logState.getWidth(), logState.getHeight());
         frame.setLocation(logState.getX(), logState.getY());
+        try {
+            frame.setIcon(logState.getIsIcon());
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        }
     }
 }

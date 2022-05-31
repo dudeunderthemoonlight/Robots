@@ -1,20 +1,21 @@
 package storage;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Класс записи и чтения состояний окон в/из файла.
  */
 public class StateHandler {
     private final String PATH = System.getProperty("user.home") + File.separator + "robotsState.txt";
-    public final HashMap<String, WindowState> tempStorage = new HashMap<>();
+    public final Map<String, WindowState> tempStorage = new HashMap<>();
 
     /**
      * Запись словаря в файл.
      */
-    public void saveToFile(HashMap<String, WindowState> states) {
+    public void saveToFile(Map<String, WindowState> states) {
         try {
             FileOutputStream fileOut = new FileOutputStream(PATH);
             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
@@ -51,19 +52,19 @@ public class StateHandler {
      * @return словарь состояний
      */
     @SuppressWarnings("unchecked")
-    public HashMap<String, WindowState> readStates() {
+    public Map<String, WindowState> readStates() {
         var dataObject = readFile();
         if (dataObject == null) {
             return new HashMap<>();
         } else {
-            return (HashMap<String, storage.WindowState>) dataObject;
+            return (Map<String, WindowState>) dataObject;
         }
     }
 
     /**
      * Сохранение состояний всех окон в tempStorage
      */
-    public void saveStates(ArrayList<Savable> windows){
+    public void saveStates(List<Savable> windows){
         for (Savable window : windows) {
             window.saveState(tempStorage);
         }

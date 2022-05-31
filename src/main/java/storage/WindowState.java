@@ -11,12 +11,14 @@ public class WindowState implements Serializable {
     private final int y;
     private final int height;
     private final int width;
+    private final boolean isIcon;
 
     public WindowState(JInternalFrame frame) {
         this.x = frame.getX();
         this.y = frame.getY();
         this.width = frame.getWidth();
         this.height = frame.getHeight();
+        this.isIcon = frame.isIcon();
     }
 
     public WindowState(JDialog dialog) {
@@ -24,13 +26,15 @@ public class WindowState implements Serializable {
         this.y = dialog.getY();
         this.width = dialog.getWidth();
         this.height = dialog.getHeight();
+        this.isIcon = dialog.isActive();
     }
 
-    public WindowState(int x, int y, int height, int width) {
+    public WindowState(int x, int y, int height, int width, boolean isIcon) {
         this.x = x;
         this.y = y;
         this.height = height;
         this.width = width;
+        this.isIcon = isIcon;
     }
 
     public int getX() {
@@ -47,5 +51,9 @@ public class WindowState implements Serializable {
 
     public int getWidth() {
         return width;
+    }
+
+    public boolean getIsIcon() {
+        return isIcon;
     }
 }

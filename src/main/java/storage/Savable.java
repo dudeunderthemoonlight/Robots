@@ -1,7 +1,7 @@
 package storage;
 
 
-import java.util.HashMap;
+import java.beans.PropertyVetoException;
 import java.util.Map;
 
 /**
@@ -13,11 +13,11 @@ public interface Savable {
      * Метод сохранения состояния.
      * @param states - словарь состояний состояние
      */
-    void saveState(HashMap<String, WindowState> states);
+    void saveState(Map<String, WindowState> states);
 
     /**
      * Метод восстановления сохраненного состояния, при предыдущем выходе.
      * @param states - словарь состояний состояние
      */
-    void recoverState(HashMap<String, WindowState> states);
+    void recoverState(Map<String, WindowState> states) throws PropertyVetoException;
 }

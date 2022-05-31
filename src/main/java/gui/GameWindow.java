@@ -6,7 +6,9 @@ import storage.Savable;
 import storage.WindowState;
 
 import java.awt.*;
+import java.beans.PropertyVetoException;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
@@ -47,16 +49,21 @@ public class GameWindow extends JInternalFrame implements Savable {
     }
 
     @Override
-    public void saveState(HashMap<String, WindowState> states) {
+    public void saveState(Map<String, WindowState> states) {
         states.put("gameWindow", new WindowState(this));
     }
 
     @Override
-    public void recoverState(HashMap<String, WindowState> states) {
+    public void recoverState(Map<String, WindowState> states) {
         GameWindow frame = this;
         WindowState gameState = states.getOrDefault("gameWindow",
-                new WindowState(230, 10, 600, 1000)); //default settings
+                new WindowState(230, 10, 600, 1000, true)); //default settings
         frame.setSize(gameState.getWidth(), gameState.getHeight());
         frame.setLocation(gameState.getX(), gameState.getY());
+        try {
+            frame.setIcon(gameState.getIsIcon());
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        }
     }
 }

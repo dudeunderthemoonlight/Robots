@@ -3,7 +3,6 @@ package gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.swing.*;
 
@@ -12,6 +11,8 @@ import log.Logger;
 import storage.Savable;
 import storage.StateHandler;
 import storage.WindowState;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -30,11 +31,9 @@ public class MainApplicationFrame extends JFrame {
     private static final JDesktopPane desktopPane = new JDesktopPane();
 
     private final StateHandler stateHandler = new StateHandler();
-    private final RobotModel m_robotModel = new RobotModel();
-    private final GameWindow gameWindow = new GameWindow(m_robotModel);
-    private final LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
+    private final RobotModel robotModel = new RobotModel();
 
-    private final ArrayList<Savable> windows = new ArrayList<>();
+    private final List<Savable> windows = new ArrayList<>();
 
 
     /**
@@ -78,7 +77,7 @@ public class MainApplicationFrame extends JFrame {
      * Генерауия окон + восстановление состояния состояний окон.
      */
     private void stateRecovery() {
-        HashMap<String, WindowState> states = stateHandler.readStates();
+        Map<String, WindowState> states = stateHandler.readStates();
         generateLogWindow(states);
         generateGameWindow(states);
         generateCoordinateWindow(states);
@@ -118,7 +117,9 @@ public class MainApplicationFrame extends JFrame {
     /**
      * Генерирует игровое окно по словарю состояний.
      */
-    protected void generateGameWindow(HashMap<String, WindowState> states) {
+    protected void generateGameWindow(Map<String, WindowState> states) {
+        GameWindow gameWindow = new GameWindow(robotModel);
+
         gameWindow.recoverState(states);
         addWindow(gameWindow);
         windows.add(gameWindow);
@@ -127,7 +128,9 @@ public class MainApplicationFrame extends JFrame {
     /**
      * Генерирует окно логирования по словарю состояний.
      */
-    protected void generateLogWindow(HashMap<String, WindowState> states) {
+    protected void generateLogWindow(Map<String, WindowState> states) {
+        LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
+
         logWindow.recoverState(states);
         Logger.debug("Протокол работает");
         addWindow(logWindow);
@@ -137,8 +140,9 @@ public class MainApplicationFrame extends JFrame {
     /**
      * Генерирует окно координат робота по словарю состояний.
      */
-    protected void generateCoordinateWindow(HashMap<String, WindowState> states) {
-        CoordinateWindow coordinateWindow = new CoordinateWindow(desktopPane, m_robotModel);
+    protected void generateCoordinateWindow(Map<String, WindowState> states) {
+        CoordinateWindow coordinateWindow = new CoordinateWindow(desktopPane, robotModel);
+
         coordinateWindow.recoverState(states);
         coordinateWindow.setVisible(true);
         windows.add(coordinateWindow);
