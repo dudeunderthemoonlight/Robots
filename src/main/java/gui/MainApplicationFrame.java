@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.*;
 
@@ -35,7 +34,6 @@ public class MainApplicationFrame extends JFrame {
     private final GameWindow gameWindow = new GameWindow(m_robotModel);
     private final LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
 
-    private final HashMap<String, WindowState> tempStorage = new HashMap<>();
     private final ArrayList<Savable> windows = new ArrayList<>();
 
 
@@ -51,7 +49,6 @@ public class MainApplicationFrame extends JFrame {
 
         frame.stateRecovery();
         frame.generateMenuBar();
-
 
         frame.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         frame.addQuitListener();
@@ -69,7 +66,7 @@ public class MainApplicationFrame extends JFrame {
                                 JOptionPane.YES_NO_OPTION,
                                 JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                 if (answer == 0) {
-                    stateSaving();
+                    stateHandler.saveStates(windows);
                     event.getWindow().setVisible(false);
                     System.exit(0);
                 }
@@ -82,19 +79,9 @@ public class MainApplicationFrame extends JFrame {
      */
     private void stateRecovery() {
         HashMap<String, WindowState> states = stateHandler.readStates();
-        frame.generateLogWindow(states);
-        frame.generateGameWindow(states);
-        frame.generateCoordinateWindow(states);
-    }
-
-    /**
-     * Сохранение состояний окон.
-     */
-    private void stateSaving(){
-        for (Savable window : windows) {
-            window.saveState(tempStorage);
-            stateHandler.saveToFile(tempStorage);
-        }
+        generateLogWindow(states);
+        generateGameWindow(states);
+        generateCoordinateWindow(states);
     }
 
     /**

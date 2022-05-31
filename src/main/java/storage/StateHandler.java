@@ -1,6 +1,7 @@
 package storage;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -8,6 +9,7 @@ import java.util.HashMap;
  */
 public class StateHandler {
     private final String PATH = System.getProperty("user.home") + File.separator + "robotsState.txt";
+    public final HashMap<String, WindowState> tempStorage = new HashMap<>();
 
     /**
      * Запись словаря в файл.
@@ -56,5 +58,15 @@ public class StateHandler {
         } else {
             return (HashMap<String, storage.WindowState>) dataObject;
         }
+    }
+
+    /**
+     * Сохранение состояний всех окон в tempStorage
+     */
+    public void saveStates(ArrayList<Savable> windows){
+        for (Savable window : windows) {
+            window.saveState(tempStorage);
+        }
+        saveToFile(tempStorage);
     }
 }
