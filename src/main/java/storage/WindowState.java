@@ -18,11 +18,19 @@ public class WindowState implements Serializable {
         this.width = frame.getWidth();
         this.height = frame.getHeight();
     }
+
     public WindowState(JDialog dialog) {
         this.x = dialog.getX();
         this.y = dialog.getY();
         this.width = dialog.getWidth();
         this.height = dialog.getHeight();
+    }
+
+    public WindowState(int x, int y, int height, int width) {
+        this.x = x;
+        this.y = y;
+        this.height = height;
+        this.width = width;
     }
 
     public int getX() {

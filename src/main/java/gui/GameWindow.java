@@ -36,7 +36,7 @@ public class GameWindow extends JInternalFrame implements Savable {
     /**
      * Добавляет слушателя события закрытия окна.
      */
-    public void addQuitListener(){
+    public void addQuitListener() {
         addInternalFrameListener(new InternalFrameAdapter() {
             @Override
             public void internalFrameClosing(InternalFrameEvent e) {
@@ -54,21 +54,9 @@ public class GameWindow extends JInternalFrame implements Savable {
     @Override
     public void recoverState(HashMap<String, WindowState> states) {
         GameWindow frame = this;
-        WindowState gameState = states.get("gameWindow");
-        int height, width, y, x;
-        //default settings
-        if (gameState == null) {
-            x = 230;
-            y = 10;
-            width = 1000;
-            height = 600;
-        } else {
-            x = gameState.getX();
-            y = gameState.getY();
-            width = gameState.getWidth();
-            height = gameState.getHeight();
-        }
-        frame.setSize(width, height);
-        frame.setLocation(x, y);
+        WindowState gameState = states.getOrDefault("gameWindow",
+                new WindowState(230, 10, 600, 1000)); //default settings
+        frame.setSize(gameState.getWidth(), gameState.getHeight());
+        frame.setLocation(gameState.getX(), gameState.getY());
     }
 }

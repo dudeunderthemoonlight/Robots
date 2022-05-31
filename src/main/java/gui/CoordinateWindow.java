@@ -13,7 +13,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 
-
 /**
  * Класс окна с координатами.
  */
@@ -41,11 +40,11 @@ public class CoordinateWindow extends JDialog implements Observer, Savable {
     /**
      * Добавление прослушивания события закрытия окна.
      */
-    public void addQuitListener(){
+    public void addQuitListener() {
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent event) {
-                    m_robotModel.deleteObserver(m_coordinateWindow);
-                    event.getWindow().setVisible(false);
+                m_robotModel.deleteObserver(m_coordinateWindow);
+                event.getWindow().setVisible(false);
             }
         });
     }
@@ -58,22 +57,10 @@ public class CoordinateWindow extends JDialog implements Observer, Savable {
     @Override
     public void recoverState(HashMap<String, WindowState> states) {
         CoordinateWindow dialog = this;
-        WindowState coordinateState = states.get("coordinateWindow");
-        int height, width, y, x;
-        // default settings
-        if (coordinateState == null) {
-            x = 10;
-            y = 10;
-            width = 210;
-            height = 600;
-        } else {
-            x = coordinateState.getX();
-            y = coordinateState.getY();
-            width = coordinateState.getWidth();
-            height = coordinateState.getHeight();
-        }
-        dialog.setSize(width, height);
-        dialog.setLocation(x, y);
+        WindowState coordinateState = states.getOrDefault("coordinateWindow",
+                new WindowState(10, 10, 600, 210)); //default settings
+        dialog.setSize(coordinateState.getWidth(), coordinateState.getHeight());
+        dialog.setLocation(coordinateState.getX(), coordinateState.getY());
     }
 
     @Override
