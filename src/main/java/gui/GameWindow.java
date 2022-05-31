@@ -1,15 +1,12 @@
 package gui;
 
-import game.CoordinateWindow;
 import game.GameVisualizer;
 import game.RobotModel;
 import storage.Savable;
-import storage.Storage;
 import storage.WindowState;
 
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.util.HashMap;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
@@ -50,14 +47,14 @@ public class GameWindow extends JInternalFrame implements Savable {
     }
 
     @Override
-    public void saveState(Storage storage) {
-        storage.setState("gameWindow", new WindowState(this));
+    public void saveState(HashMap<String, WindowState> states) {
+        states.put("gameWindow", new WindowState(this));
     }
 
     @Override
-    public void loadState(Storage storage) {
+    public void recoverState(HashMap<String, WindowState> states) {
         GameWindow frame = this;
-        WindowState gameState = storage.getState("gameWindow");
+        WindowState gameState = states.get("gameWindow");
         int height, width, y, x;
         //default settings
         if (gameState == null) {

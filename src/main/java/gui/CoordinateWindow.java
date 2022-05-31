@@ -1,13 +1,14 @@
-package game;
+package gui;
 
+import game.RobotModel;
 import storage.Savable;
-import storage.Storage;
 import storage.WindowState;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -34,13 +35,13 @@ public class CoordinateWindow extends JDialog implements Observer, Savable {
         panel.add(m_coordinateContent, BorderLayout.CENTER);
 
         getContentPane().add(panel);
-        quitListener();
+        addQuitListener();
     }
 
     /**
-     * Прослушивание закрытия диалогового окна координат.
+     * Добавление прослушивания события закрытия окна.
      */
-    public void quitListener(){
+    public void addQuitListener(){
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent event) {
                     m_robotModel.deleteObserver(m_coordinateWindow);
@@ -50,14 +51,14 @@ public class CoordinateWindow extends JDialog implements Observer, Savable {
     }
 
     @Override
-    public void saveState(Storage storage) {
-        storage.setState("coordinateWindow", new WindowState(this));
+    public void saveState(HashMap<String, WindowState> states) {
+        states.put("coordinateWindow", new WindowState(this));
     }
 
     @Override
-    public void loadState(Storage storage) {
+    public void recoverState(HashMap<String, WindowState> states) {
         CoordinateWindow dialog = this;
-        WindowState coordinateState = storage.getState("coordinateWindow");
+        WindowState coordinateState = states.get("coordinateWindow");
         int height, width, y, x;
         // default settings
         if (coordinateState == null) {
