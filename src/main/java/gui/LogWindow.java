@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import java.awt.TextArea;
 import java.beans.PropertyVetoException;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
@@ -13,7 +14,6 @@ import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
 import storage.Savable;
-import storage.Storage;
 import storage.WindowState;
 
 public class LogWindow extends JInternalFrame implements LogChangeListener, Savable
@@ -54,18 +54,18 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Sava
     }
 
     @Override
-    public void saveState(Storage storage) {
-        storage.setState("logWindow", new WindowState(this));
+    public void saveState(HashMap<String, WindowState> states) {
+        states.put("logWindow", new WindowState(this));
     }
 
     /**
      * Метод применения сохраненного состояния, при предыдущем выходе.
-     * @param storage - класс хранящий состояние
+     * @param states - словарь состояний
      */
     @Override
-    public void loadState(Storage storage) {
+    public void recoverState(HashMap<String, WindowState> states) {
         LogWindow frame = this;
-        WindowState logState = storage.getState("logWindow");
+        WindowState logState = states.get("logWindow");
         int height, width, y, x;
         if (logState == null){
             x = 10;
