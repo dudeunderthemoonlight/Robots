@@ -1,6 +1,9 @@
 package storage;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Интерфейс сохранения и загрузки состояния окон.
  */
@@ -8,13 +11,13 @@ public interface Savable {
 
     /**
      * Метод сохранения состояния.
-     * @param storage - класс хранящий состояние
+     * @param states - словарь состояний состояние
      */
-    void saveState(Storage storage);
+    void saveState(HashMap<String, WindowState> states);
 
     /**
-     * Метод применения сохраненного состояния, при предыдущем выходе.
-     * @param storage - класс хранящий состояние
+     * Метод восстановления сохраненного состояния, при предыдущем выходе.
+     * @param states - словарь состояний состояние
      */
-    void loadState(Storage storage);
+    void recoverState(HashMap<String, WindowState> states);
 }
